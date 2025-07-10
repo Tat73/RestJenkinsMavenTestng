@@ -21,6 +21,7 @@ public class ResponseService {
         requestSpecification
                 .baseUri(Path.SITE_URL.getPath())
                 .contentType(ContentType.JSON)
+                .headers("x-api-key", "reqres-free-v1")
                 .log().uri()
                 .when()
                 .get()

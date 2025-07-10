@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.Map;
 
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.example.enums.Path.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -20,6 +21,7 @@ public class UsersTest {
     @Test(description = "Get all users from the 2nd page")
     public void getUsersListAndStatusCode() {
         Response response = ResponseService.sendModelWithQueryParam(Method.GET, USER_PATH, Map.of("page", 2));
+        response.then().assertThat().body(matchesJsonSchemaInClasspath("getUsersScheme.json"));
         assertThat("Status code is not 200 OK", response.getStatusCode(), Matchers.equalTo(StatusCode.OK.getCode()));
         assertThat("Content-Type is not 'application/json'", response.contentType(), Matchers.equalTo("application/json; charset=utf-8"));
     }
@@ -35,6 +37,7 @@ public class UsersTest {
     public void createRegisterAndStatusCode() {
         RegisterModel registerModel = RegisterModel.generateModel("eve.holt@reqres.in", "pistol");
         Response postResponse = ResponseService.sendModel(Method.POST, REGISTER_PATH, registerModel);
+        postResponse.then().assertThat().body(matchesJsonSchemaInClasspath("createdUserScheme.json"));
         assertThat("Status code is not 200 OK", postResponse.getStatusCode(), Matchers.equalTo(StatusCode.OK.getCode()));
     }
 
@@ -42,6 +45,7 @@ public class UsersTest {
     public void createLoginAndStatusCode() {
         LoginModel loginModel = LoginModel.generateModel("eve.holt@reqres.in", "cityslicka");
         Response postResponse = ResponseService.sendModel(Method.POST, LOGIN_PATH, loginModel);
+        postResponse.then().assertThat().body(matchesJsonSchemaInClasspath("loginScheme.json"));
         assertThat("Status code is not 200 OK", postResponse.getStatusCode(), Matchers.equalTo(StatusCode.OK.getCode()));
     }
 
